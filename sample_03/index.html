@@ -1,0 +1,378 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Sample</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="./codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="boomi-salesforce-codelab"
+                  title="Sample"
+                  environment="web"
+                  feedback-link="https://github.com/jmenning-solace/nycmoderntaxi">
+    
+      <google-codelab-step label="What you&#39;ll learn: Overview" duration="5">
+        <p>As NYC Modern Taxi begins its quest to compete with ride sharing companies, it faces many challenges. One of them is winning over existing taxi drivers, who aren&#39;t excited about using the new app.</p>
+<p>To that end, NYC Modern Taxi Company decided to use Salesforce to treat each cabdriver like a potential customer. Account managers have been assigned 30 taxicab drivers each and have been instructed to spare no amount of free coffee to get them using the new app. Time is of the essence, so as soon as a driver agrees to join the app, the data in Salesforce needs to be available in the operations database. Simultaneously, NYC Taxi conducts a background check.</p>
+<p>In this scenario, there&#39;s no time for data re-entry, or delays in data transmission: It&#39;s gotta be event-driven. If a driver tries to login to the app and can&#39;t because the information isn&#39;t there...fuhgettaboutit.</p>
+<p>This codelab covers a lot of ground. You&#39;ll learn about:</p>
+<p>✅ How to design an Event Driven Architecture with the Solace&#39;s Event Portal</p>
+<p>✅ How to seamlessly implement your architecture using the PubSub+ Connector for Boomi and distribute real-time data around your enterprise</p>
+<p>✅ How to get events flowing out of Salesforce using its Change Data Capture and Platform Events capabilities</p>
+<p>✅ How to use Boomi&#39;s Salesforce Platform Events connector to receive those events and transform them</p>
+<p>✅ How to interact with Azure SQL, a cloud-based database, using Boomi&#39;s connector.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="What you need: Prerequisites" duration="7">
+        <ol type="1">
+<li>A general understanding of <a href="https://docs.solace.com/#Messagin" target="_blank">event-driven architecture (EDA) terms and concepts</a>.</li>
+<li>Basic knowledge of the Boomi GUI and deployments. A good place to start would be the <a href="https://codelabs.solace.dev/codelabs/boomi-v2-getting-started/index.html" target="_blank">Getting Started with Boomi and Solace</a> Codelab.</li>
+<li>A free Salesforce developer account. You can sign up here: <a href="https://developer.salesforce.com/signup" target="_blank">https://developer.salesforce.com/signup</a></li>
+<li>A free Azure account: You can sign up here: <a href="https://azure.microsoft.com/en-us/free/" target="_blank">https://azure.microsoft.com/en-us/free/</a></li>
+</ol>
+<p>After you finish the Getting Started with Boomi and Solace codelab, you&#39;ll have the following</p>
+<ul>
+<li>A Solace trial account</li>
+<li>A Boomi trial account,</li>
+<li>A local atom up and running.</li>
+<li>An understanding of how to deploy a Boomi process to a Boomi Atom</li>
+</ul>
+<aside class="warning"><p>It&#39;s important to note that this codelab uses a pre-release version of the Solace connector to highlight cutting edge features and some prebuilt code to get you up and running faster. Please reach out to our <a href="https://solace.community/" target="_blank">Solace Community</a> to get a copy of both.</p>
+</aside>
+<aside class="special"><p>If you&#39;re new to the world of events, welcome! Solace has <a href="https://solace.com/blog/" target="_blank">extensive blogs focusing on event-driven architecture and development.</a></p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Use Case Overview 🚕" duration="15">
+        <h2 is-upgraded>⚙️ Import Event Portal Application Domain</h2>
+<p>Download the Event Portal Application Domain export files:</p>
+<p><a href="https://raw.githubusercontent.com/jmenning-solace/nycmoderntaxi/master/event_portal/NYC-Modern-Taxi-Co-Back-Office.json" target="_blank">Back Office</a></p>
+<p><a href="https://raw.githubusercontent.com/jmenning-solace/nycmoderntaxi/master/event_portal/NYC-Modern-Taxi-Co-Analytics.json" target="_blank">Analytics</a></p>
+<p><a href="https://raw.githubusercontent.com/jmenning-solace/nycmoderntaxi/master/event_portal/NYC-Modern-Taxi-Co-Ops.json" target="_blank">Operations</a></p>
+<p>Inside of your logged into Solace Cloud Account navigate to the Event Portal Designer by clicking &#34;Designer&#34; in the menu on the left.</p>
+<p class="image-container"><img alt="event" src="img/4b83f881a1de9b5.webp"></p>
+<p>Then import the downloaded Application Domain files by clicking the <code>Toolkit</code> icon at the top right of the <em>Designer</em> and importing the files.</p>
+<p class="image-container"><img alt="ep_click_import" src="img/74dc40267b4899c1.png"></p>
+<h2 is-upgraded>⚙️ High-level Architecture overview with the Solace Event Portal</h2>
+<ol type="1">
+<li>Go to the Solace Event Portal Designer <a href="https://console.solace.cloud/designer" target="_blank">https://console.solace.cloud/designer</a></li>
+<li>Open the NYC Modern Taxi Co – Back Office domain by double clicking on it.</li>
+</ol>
+<p class="image-container"><img alt="eventportaldomain" src="img/ef1a176e0ce31bec.png"></p>
+<p>Here&#39;s the basic flow of events through the system</p>
+<p>👉 After being convinced by cash, coffee or other means, a driver agrees to use the app</p>
+<p>👉 The account representative changes the driver&#39;s account from inactive to active</p>
+<p>👉 Salesforce sends an event to Boomi</p>
+<p>👉 A Boomi process transforms the event payload, removing unnecessary fields and publishes the event to the Solace event broker.</p>
+<p>👉 Solace simultaneously distributes copies of the driver&#39;s information across the company:</p>
+<ul>
+<li><code>Update Driver Database</code> Boomi process receives the event, and inserts or updates the driver information in an Azure Cosmos database</li>
+<li>If the <code>active</code> field on the account is set to <code>activated</code>, the <code>Background Check</code> Boomi process runs a background check on the driver. This takes 3 minutes. When finished, the <code>Update Driver Database</code> process updates the database with the results. (You already got a lot on our plate, so that&#39;ll be an optional exercise at the end)</li>
+<li>The account information goes to the Analytics department&#39;s data lake for real-time analysis. (Once again, you&#39;ll save that part for another CodeLab)</li>
+</ul>
+<p>Do a deep dive into the individual applications, events and schemas by double clicking on them. Note that Event Portal houses all the schemas and topic strings that you&#39;ll need for the CodeLab.</p>
+<aside class="special"><p>If you want to learn more about the architecture for this CodeLab, check out the <a href="https://solace.com/blog/category/architects/" target="_blank">Solace Architecture blog</a>.</p>
+</aside>
+<p>Two notes:</p>
+<ul>
+<li>With event-driven design, each component is decoupled from one another. That makes development and testing each component in isolation easier. You&#39;ll take that approach here: one at a time, we&#39;ll get Solace, Salesforce, Boomi and Azure SQL working in &#34;Hello World&#34; fashion. Then you will link them all together using the PubSub+ Event Broker to complete the solution.</li>
+<li>Designing the architecture in Solace Event Portal means that the schemas, topics and events are in one place, versioned and governed. It also means that the Solace PubSub+ Connector for Boomi can import them, saving you from manually re-entering information into Boomi.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Salesforce Event Architecture" duration="5">
+        <h2 is-upgraded>⚙️ Deeper Dive into Salesforce Event Architecture</h2>
+<p class="image-container"><img alt="sf_arch" src="img/229f921f35a89b0e.png"></p>
+<ul>
+<li>An account rep updates or adds an Account using the Salesforce UI</li>
+<li>Salesforce alerts an Apex trigger that an account has changed</li>
+<li>The trigger maps the new values for the Account into a custom platform AccountChanged event</li>
+<li>Salesforces publishes the event on its internal message bus</li>
+<li>Boomi&#39;s Salesforce Platform Events connector listens for AccountChanged events</li>
+<li>A Boomi process maps the Salesforce Platform Event into a Solace event, standardizing the data format and creating a topic string that allows for pinpoint data distribution.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Connect Boomi to Solace Event Portal and Event Broker" duration="30">
+        <h2 is-upgraded>⚙️ Get connection values for PubSub+</h2>
+<p>Follow the steps in the <a href="https://codelabs.solace.dev/codelabs/boomi-v2-getting-started/index.html?#1" target="_blank">Getting Started with Boomi and Solace codelab</a> to get the connection values for your Solace PubSub+ Broker</p>
+<h2 is-upgraded>⚙️ Generate the Solace Event Portal token</h2>
+<p class="image-container"><img alt="image007" src="img/e4c6b392ee8c2e8b.png"></p>
+<ol type="1">
+<li>Click on Token Management<br><img alt="image008" src="img/35200ee16bbc9659.png"></li>
+<li>Click on Create Token<br><img alt="image009" src="img/7a109cb5931339a.png"></li>
+<li>Name the token BoomiUIAccess. Give it the &#34;Event Portal Read&#34; permission:<br><img alt="image010" src="img/4831a2ccb5594690.png"></li>
+<li>Click on Generate Token <img alt="image011" src="img/62db5813a72e09cd.png"></li>
+<li>Copy the generated token to a text editor. You will use it in the next section.</li>
+</ol>
+<h2 is-upgraded>⚙️ Boomi configuration</h2>
+<aside class="warning"><p>At this point, Solace is not part of the Boomi Process Library. Reach out to us at the <a href="https://solace.community/" target="_blank">Solace Community</a> and we will get the code to you.</p>
+</aside>
+<h2 is-upgraded>⚙️ Connect the process to listen for Solace events</h2>
+<ol type="1">
+<li>Go to the <a href="https://platform.boomi.com/AtomSphere.html#build" target="_blank">Boomi Integrate UI</a></li>
+<li>Open the Hello World – Listen for Solace Event process you just added to your workspace.<br><img alt="image013" src="img/a1fa7506c3eb90cb.png"></li>
+<li>Click on the start shape, then click on the pencil icon next to the Solace Event Portal and PubSub+ Connection field <img alt="image014" src="img/55132fb4875e4dde.png"></li>
+<li>Fill in the Solace Event Portal and Event Broker connection information you gathered in the last section.<br><img alt="image015" src="img/db6f54dc09655cc9.png"></li>
+<li>Click on Test Connection. Select an atom, then click Next. You should get a message indicating that the test connection was successful. Then save and close the Connection. <img alt="image016" src="img/db1814abeb708f74.png"></li>
+<li>Next, modify the Connector Operation by clicking on the pencil icon. <img alt="image017" src="img/f1dbc33bc166beab.png"></li>
+<li>Click on the Import button <img alt="image018" src="img/15c3d140766ed373.png"></li>
+<li>Pick an atom, and use the Event Portal connection that you just modified.<br><img alt="image019" src="img/4c8045af4b0bb22d.png"></li>
+<li>Event Portal returns a list of events currently available on the Event Portal. Select the DriverUpserted event, and click on OK.<br><img alt="image020" src="img/c4f2dc1225685954.png"><br> Boomi grabs the schema from the Event Portal and creates a response profile (you&#39;ll use this for mapping in a later section). It also brings the topic subscription format from Event Portal. <img alt="image021" src="img/572fb19e9c07a051.png"></li>
+</ol>
+<ul>
+<li>Change the destination to <code>NYCTAXI.BACKOFFICE.BOOMI.UPDATEDRIVERDB</code> This will be the Solace queue that the process binds to. Solace will create it automatically when you deploy the process for the first time.</li>
+<li>Replace the topic string structure with <code>taxinyc/backoffice/driver/upserted/v1/salesforce/></code> The <code>></code> character at the end is a wildcard that means that your process will get all DriverUpserted events, regardless of the upsert source or the account status.</li>
+<li>Make sure that the check box next to Create Queue and TS is checked.</li>
+<li>Save and Close the Connector operation and start shape.</li>
+</ul>
+<aside class="warning"><p>Due to Boomi SDK limitations, the current version of the connect does not allow you to modify an existing topic string. If you do want to make a change, re-import the event from Event Portal.</p>
+</aside>
+<h2 is-upgraded>⚙️ Package and deploy</h2>
+<ol type="1">
+<li>Save the Process, then click on Create Packaged Component using default options. Proceed to Deploy the new components to your atom. <img alt="image022" src="img/c7ef788b1a794037.png"></li>
+<li>Ensure that the Solace listener is up and running by going to Manage &gt; Atom Management <img alt="image023" src="img/24e4d6bbe63db17d.png"></li>
+<li>Click on your atom<br><img alt="image024" src="img/5bf7798733f6fb69.png"></li>
+<li>In the middle column, select Listeners <img alt="image025" src="img/f6793dba81e17f58.png"></li>
+<li>You should see the listener up and running, with a green circle next to it.<br><img alt="image026" src="img/e812d78b04a21a22.png"></li>
+</ol>
+<aside class="special"><p>You&#39;ll test this flow in the next section once you have a publisher process up and running. So what did you just do? You just created the Boomi flow and the Solace objects needed for the solution. Once we have a publisher (which you&#39;ll do in the next step), you&#39;ll be able route a message through Boomi using Solace.</p>
+</aside>
+<p class="image-container"><img alt="image027" src="img/12ad83e62e51671c.png"></p>
+<h2 is-upgraded>And Now-One Quick Fix</h2>
+<aside class="warning"><p>In the current version of the Solace connector, if an error occurs while a Boomi process is processing an event, it could lead to a &#34;poison message&#34; scenario, where the event is processed over and over again. To avoid this, use this manual workaround for the time being, until Solace releases a new version (it&#39;s coming).</p>
+</aside>
+<ol type="1">
+<li>Go back to the Solace UI, click on Messaging Services in the upper left, then select the messaging service that you created.</li>
+<li>Click on Manage <img alt="manage" src="img/359770439843f804.png"></li>
+<li>Click on Queues <img alt="queues" src="img/65d1ab98625cc9f9.png"></li>
+<li>Click on the +Queue button to create a new queue to hold events that have failed processing <img alt="newqueue" src="img/b925b3aff9725774.png"></li>
+<li>In the popup, name the new queue <code>#DEAD_MSG_QUEUE</code> and hit Done.</li>
+<li>Click on the input queue for your Boomi Process: <code>NYCTAXI.BACKOFFICE.BOOMI.UPDATEDRIVERDB</code> queue <img alt="updatequeue" src="img/7d56e9705a6cab6b.png"></li>
+<li>Click on the Edit button (with the pencil) in the upper right</li>
+<li>Click on Show Advanced Settings in the upper right</li>
+<li>Change the <code>Maximum Redelivery Count</code> field to <code>3</code>. This moves a failed event to a queue named <code>#DEAD_MSG_QUEUE</code> after 3 attempts. <img alt="redelivery" src="img/95c548eddbaf1fa9.png"></li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Connect the Solace message publishing process" duration="10">
+        <p>You will reuse the Solace connector you created in the last step, so you&#39;ll just need to modify the Solace connector operation.</p>
+<ol type="1">
+<li>Open the &#34;Hello World - Publish Solace Event&#34; process, and click on the Publish DriverUpsertedEvent operation <img alt="image028" src="img/d81c04feabb57a68.png"></li>
+<li>You&#39;ll note that the sample code has already filled in the destination topic. <img alt="sendoperation" src="img/cf924d2d56e58d09.png"></li>
+<li>Since this process doesn&#39;t use a Listen, we can just use Boomi&#39;s test functionality. Click on the Test button and choose your atom.</li>
+<li>Once the test completes, go to Manage &gt; Process Reporting <img alt="image030" src="img/7ed18b3d34ab6c19.png"></li>
+<li>You should see an execution of the Hello World Listener <img alt="image031" src="img/afb97dd81492fc63.png"></li>
+<li>Click to view the logs and see that the process received the message successfully. So what did you just do? You now have a complete Boomi and Solace integration, with the first Boomi process publishing a message on a topic. Solace examines the topic string on the event, finds a matching subscription and puts the event on a queue. A second Boomi process is listening for events that land on that queue, so when a event does land there, the process instantly triggers. <img alt="image032" src="img/f7bff19d2cae17b7.png"></li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create a new Connected App in Salesforce" duration="30">
+        <h2 is-upgraded>⚙️ Salesforce configuration</h2>
+<ol type="1">
+<li>Log into your Salesforce Developer account</li>
+<li>Switch to the Setup view using the button in the upper right hand corner <img alt="image033" src="img/4f475c6cfbde7ea3.png"></li>
+<li>In left hand column, expand out Apps, then click on App Manager <img alt="image034" src="img/3c836e57984ccd9f.png"></li>
+<li>Click on &#34;New Connected App&#34; <img alt="image035" src="img/273f47c2a22d130.png"></li>
+<li>Configure the Connected App <img alt="image036" src="img/c281934a0dae072c.png"></li>
+</ol>
+<ul>
+<li>For the callback URL, insert your Boomi account ID. If you&#39;re logged into Boomi, it will be the part immediately after accountId= For example, if your Boomi URL is: <code>https://platform.boomi.com/AtomSphere.html#build;accountId=trainingjessemenning-WX1LP2</code> Then your account id is: <code>trainingjessemenning-WX1LP2</code> And your callback URL is: <code>https://platform.boomi.com/account/trainingjessemenning-WX1LP2/oauth2/callback</code></li>
+<li>For the Oauth Scopes, move Full Access into the Selected OAuth Scopes.</li>
+<li>Click on the Configure ID Token check box, and make the token valid for 720 minutes <img alt="image037" src="img/93378663649e7cf3.png"></li>
+</ul>
+<p>1.Click on Save. In the next screen, Copy and paste the consumer key and consumer secret into a text editor. You&#39;ll use the values when you&#39;re configuring Boomi&#39;s Salesforce Platform Event connector.   <img alt="image039" src="img/d85beb6cb8ea7d3e.png"></p>
+<h2 is-upgraded>⚙️ Define Platform Event structure</h2>
+<ol type="1">
+<li>Type &#34;platform&#34; into the quick find box in the left-hand column and click on &#34;Platform Events&#34; <img alt="image040" src="img/cb8e6177f62a706c.png"></li>
+<li>Click on New Platform Event <img alt="image041" src="img/f153d35dc2565a8e.png"></li>
+<li>Use AccountChanged as the label for the event and click on Save. <img alt="image042" src="img/65e25d468f981c9f.png"></li>
+<li>Add the following Custom Fields by repeatedly clicking on the &#34;New&#34; button and following the instructions. Note that spelling does matter, so please be careful. <img alt="image043" src="img/6c62cb545f64e61.png"></li>
+</ol>
+<h2 is-upgraded>⚙️ Create a trigger that populates and publishes the Platform Event</h2>
+<ol type="1">
+<li>In the upper right-hand portion of the screen, click on Developer Console <img alt="image044" src="img/368546b941d60a35.png"></li>
+<li>Go to File &gt; New &gt; Apex Trigger <img alt="image045" src="img/8e1fdc47197c97c7.png"></li>
+<li>In the popup, enter the following values and click on submit: <img alt="image046" src="img/a416dddb08a172ec.png"></li>
+<li>Download the <a href="https://raw.githubusercontent.com/jmenning-solace/nycmoderntaxi/master/boomi-salesforce-codelab/AccountChangeTrigger.txt" target="_blank">Account Change trigger definition</a> Cut and paste the code into the main code area and save.</li>
+</ol>
+<h2 is-upgraded>⚙️ Test it out using Salesforce Workbench</h2>
+<ol type="1">
+<li>In a new tab, go to https://workbench.developerforce.com/login.php. Accept the term and click Login with Salesforce <img alt="image047" src="img/6500ec5c45657171.png"></li>
+<li>Select &#34;Stream Push Topics&#34; from the Jump To menu <img alt="image048" src="img/55c3bad9059cdf38.png"></li>
+<li>Click on the Generic Subscriptions radio button <img alt="image049" src="img/5f9e41796075e9c.png"></li>
+<li>In the subscription field, enter /event/AccountChanged__e</li>
+<li>Back in Salesforce, leave the Setup section of Salesforce, and go to the Sales Console <img alt="image050" src="img/d112117a745977c1.png"></li>
+<li>Create a new account. <img alt="image051" src="img/836d62921507c057.png"></li>
+<li>Enter the name of the driver, phone number and billing address information. Be sure to set the Active dropdown to of the account to &#34;active&#34;, as only active accounts are sent over to the Driver database. <img alt="image052" src="img/b76c30914a9291ca.png"><img alt="image053" src="img/b5714cf7b91fd1.png"><img alt="image054" src="img/4fecda6c96066925.png"></li>
+<li>Move back to the workbench tab. You should see data from your newly created account. <img alt="image055" src="img/a0d5f4cf80fd6b3e.png"></li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Configure Boomi to connect to Salesforce" duration="0">
+        <ol type="1">
+<li>Open the &#34;Hello World - Listen for Salesforce Platform Event&#34; sample process. <img alt="image056" src="img/a60b25bb0a9ebcf5.png"></li>
+<li>Click on the Start shape, then select &#34;Salesforce Platform Events&#34; in the dropdown</li>
+<li>Click on the plus sign in the Connection box to create a new connection to Salesforce</li>
+<li>Cut and paste the Client ID from the previous step into the Client ID box</li>
+<li>Cut and paste the Client Secret into the Client Secret box.</li>
+</ol>
+<p>Scroll to the bottom of the screen and click on Generate <img alt="image057" src="img/ebc5a732a70c6e2.png"></p>
+<aside class="warning"><p>If you get an error that states <code>Unable to browse connector: invalid response: [{"message":"The REST API is not enabled for this Organization.","errorCode":"API_DISABLED_FOR_ORG"}]</code> the connected app is not ready yet. It can take a couple hours.</p>
+</aside>
+<p class="image-container"><img alt="image058" src="img/f419839f660fd6ac.png"></p>
+<p>You&#39;ll see the following if it&#39;s successful: <img alt="image059" src="img/7f6d4148d677b6b6.png"><img alt="image060" src="img/ae66ec610b0bedc1.png"></p>
+<ol type="1">
+<li>Click on Save and Close</li>
+<li>Click on the Plus sign next to Connector operation to create a new operation.</li>
+<li>Click on Import in the upper right corner <img alt="image061" src="img/161023020664c418.png"></li>
+<li>Fill out the Import wizard with your local atom, and your newly created connection. <img alt="image062" src="img/467c7f514a776650.png"></li>
+<li>You should see your account change event listed. <img alt="image063" src="img/1932d32837ecfd6a.png"></li>
+<li>Before plunging further, deploy your testing flow using the typical deployment routine. Then make a change within Salesforce and see if it reaches Boomi.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create the Azure SQL database" duration="0">
+        <ol type="1">
+<li>Login to <a href="https://portal.azure.com/" target="_blank">https://portal.azure.com/</a></li>
+<li>In the top menu got to SQL Databases &gt; Create <img alt="image064" src="img/e4b3103224e739b6.png"></li>
+<li>Enter your Subscription and Resource Group, creating a new one if needed</li>
+<li>Database name should be taxinyc</li>
+<li>Create a new server. Note that the server name must be unique, so find one that&#39;s available. <img alt="image065" src="img/bc928b2c60b2f0e0.png"></li>
+<li>In a text editor, save the Server name (including .database.windows.net), server admin login, and the password for later.</li>
+<li>Under Compute+Storage, change options to &#34;serverless&#34;</li>
+<li>Click on review and create <img alt="image066" src="img/e12fafc041281764.png"></li>
+<li>Deployment starts. Once it&#39;s finished, click on &#34;Go to resource&#34; <img alt="image067" src="img/cdeb89851e9f676e.png"></li>
+<li>To allow connections into the database, you need to create a firewall rule that allows certain IP addresses to connect.</li>
+</ol>
+<p>Click on Set Server Firewall. In the firewall rules section create a rule that looks like this: <img alt="image069" src="img/ee4cc617e0ea7e18.png"></p>
+<aside class="warning"><p>Because this is only a demo, we&#39;ll let all IPs connect. NEVER DO THIS IN A PROD ENVIRONMENT!!!!</p>
+</aside>
+<p>Click on Save</p>
+<ol type="1">
+<li>Now you can start set up the Driver table. Click on the query editor <img alt="image070" src="img/906aa3bba4a91871.png"></li>
+</ol>
+<p>Create the table by cutting and pasting this code into the Query tab, then clicking on Run</p>
+<pre><code>CREATE TABLE Drivers (
+ driver_id int IDENTITY(1,1) PRIMARY KEY,
+ first_name varchar(255) ,
+ last_name varchar(255),
+ rating int,
+ car_class varchar(10),
+ salesforce_id varchar(255) UNIQUE,
+ account_status varchar(12),
+	background_status varchar(10),
+ account_type varchar(10),
+ billing_street_address varchar(255),
+ billing_city varchar(255),
+ billing_state varchar(10),
+ billing_zip varchar(10)
+);
+</code></pre>
+<p class="image-container"><img alt="image071" src="img/f1159d2c5136a0b3.png"></p>
+<ol type="1">
+<li>Confirm that the table exists: <img alt="image072" src="img/97a938d5c89d779e.png"></li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Connect Boomi to the Azure SQL Database" duration="0">
+        <ol type="1">
+<li>If you are using a local atom, need to do some extra steps to add the SQL jar:</li>
+<li>Download jar from here: <a href="https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server" target="_blank">https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server</a></li>
+<li>Extract the zip file</li>
+<li>Copy mssql-jdbc-8.2.2.jre8.jar to <code><Boomi install directory>/userlib/database</code> . If those directories don&#39;t exist, just create them.</li>
+<li>End result should look like this, where the highlighted portion depends on how you installed the Atom <img alt="image073" src="img/4c2b255bae44a99b.png"></li>
+<li>OK, back to the fun stuff: In another tab, head back to the Boomi UI</li>
+<li>Open the &#34;Azure SQL Database Connection – taxinyc&#34;</li>
+<li>Open the &#34;Hello World - Select from/Insert into Azure SQL&#34; process</li>
+<li>Fill in the connection details you saved in the last section. The value for the host will be different than the one listed here. <img alt="image073" src="img/4c2b255bae44a99b.png"></li>
+<li>Click on Test Connection, you should get a &#34;success&#34; message. If not, check your connection values. Save and close.</li>
+<li>Open the Hello World - Select from/Insert into Azure SQL process.</li>
+<li>Click on the &#34;Test&#34; button</li>
+<li>Once it runs, return to the Azure UI, and get the data you just inserted. <img alt="image074" src="img/b3482e9af2ca156f.png"></li>
+<li>Return to Boomi, double click on the &#34;Sample data for testing&#34; shape, and change the first name <img alt="image075" src="img/3f31fe43045e5589.png"></li>
+<li>Rerun the test and confirm that the data has changed. <img alt="image076" src="img/8fe8b2c0319898c7.png"></li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Tying it all together with Solace PubSub&#43;" duration="0">
+        <ol type="1">
+<li>Now that we have all the components tested individually, we can use the Solace event broker to tie them all together. <img alt="overallarchitecture" src="img/bfd0081afb1bc59d.png"></li>
+<li>First, undeploy all the processes we used for testing. Go to Deploy &gt; Deployments <img alt="image077" src="img/6e6be8e04e692cd1.png"></li>
+</ol>
+<p>Undeploy any &#34;Hello World&#34; processes that are deployed <img alt="image078" src="img/caf1f8caf498216.png"></p>
+<ol type="1">
+<li>Open the &#34;Listen for Salesforce Platform Account, publish Solace DriverUpserted&#34; process. Expanding on the Hello World functionality, here are the differences: <img alt="image079" src="img/9d4112337e09732d.png"></li>
+</ol>
+<p>Rather than using the same topic, here the code change the topic string based on whether the account is active, just was activated or was deactivated <img alt="image080" src="img/a859c1cd2f1cc497.png"></p>
+<p>There is now a mapping from the Salesforce event over into the standard Solace event. <img alt="image081" src="img/bc311fb25e24b3d1.png"></p>
+<p>At the end of the process, Boomi publishes the message to Solace, on the topic string you generate earlier in the process.</p>
+<ol type="1">
+<li>You don&#39;t need to make any changes, just create a packaged component and deploy it as usual</li>
+<li>Open up the &#34;Listen for Solace DriverUpserted, Insert into Drivers&#34; process. This process also expands on the Hello World flows. Rather than just using canned data, it listens for events on the queue you created earlier. As Solace publishes DriverUpserted events, they land on the queue. The process grabs them and inserts or updates the Driver table.</li>
+<li>Create a Packaged Component and deploy.</li>
+<li>The world is your oyster. Log back into Salesforce and add and modify Accounts. As you do, they should stream in real time over Boomi and Solace, and instantly land in the SQL database</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Conclusion" duration="0">
+        <p>Congratulations, you now have a functioning, real-time, event-driven Salesforce implementation. No more worries about your operational database lagging behind Salesforce. Because no one likes an angry cabbie. Although seeing event move quickly though an enterprise is pretty cool, this is just the beginning. Event enabling Salesforce vastly simplifies adding on additional information consumers. Like we mentioned in the beginning—need to add a background check? Just add another process with a subscription and add the logic. Want to add real-time analytics? Send the DriverUpserted events to Kafka. Now that you have real-time data flowing, the possibilities are endless.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Takeaways" duration="1">
+        <p>Thanks for participating in this codelab! Let us know what you thought in the <a href="https://solace.community/" target="_blank">Solace Community Forum</a>! If you found any issues along the way we&#39;d appreciate it if you&#39;d raise them by clicking the Report a mistake button at the bottom left of this codelab.</p>
+<p>✅ For more information on the Solace Connector check out the <a href="https://solace.com/connectors/dell-boomi-ipaas/" target="_blank">PubSub+ Connector Hub</a> page</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
