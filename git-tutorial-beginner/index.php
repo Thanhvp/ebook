@@ -45,6 +45,9 @@
 <p>Trên máy tính HĐH Window, các bạn có thể tải và cài đặt git tại <a href="https://git-scm.com/download/win" target="_blank">https://git-scm.com/download/win</a></p>
 <h2 is-upgraded>Linux</h2>
 <p>Trên máy tính HĐH Linux, làm theo hướng dẫn tại <a href="https://git-scm.com/download/linux" target="_blank">https://git-scm.com/download/linux</a></p>
+<h2 is-upgraded>Kiểm tra</h2>
+<p>Mở CMD (window) hoặc terminal (Linux) và đánh lệnh kiểm tra để biết cài đặt thành công</p>
+<p><code>git --version</code></p>
 
 
       </google-codelab-step>
@@ -86,12 +89,43 @@
       </google-codelab-step>
     
       <google-codelab-step label="Các lệnh Git cơ bản" duration="5">
-        <h2 is-upgraded>Clone</h2>
+        <aside class="warning"><p>Trước khi bắt đầu, bạn nên tạo 1 thư mục trống để thực hành.</p>
+</aside>
+<h2 is-upgraded>Clone</h2>
+<p>Lệnh clone dùng để tạo local repo trên máy tính</p>
+<ol type="1">
+<li>Clone từ github</li>
+</ol>
+<p><code>git clone https://<Tên tài khoản>:<Token>@github.com/Thanhvp/<tên repo></code></p>
+<ol type="1">
+<li>Clone từ gitlab</li>
+</ol>
+<p><code>git clone https://<Tên tài khoản>:<Token>@gitlab.com/daithanhbk/<tên repo>.git</code></p>
+<p>1 thư mục làm việc sẽ được tải về máy tính. Bạn có truy cập vào thư mục để bắt đầu làm việc.</p>
+<p><code>cd <tên thư mục></code></p>
 <h2 is-upgraded>Status</h2>
+<p>Xem trạng thái hiện tại, đang ở nhánh nào, có những file nào đang bị thay đổi, thêm, sửa, xóa...</p>
+<p><code>git status</code></p>
 <h2 is-upgraded>Add</h2>
+<p>Lưu thông tin chuẩn bị commit.</p>
+<p><code>git add <tên file></code></p>
+<p>Trong trường hợp muốn add tất cả.</p>
+<p><code>git add .</code></p>
 <h2 is-upgraded>Commit</h2>
+<p>Lưu lại các thay đổi</p>
+<p><code>git commit -m "ghi chú"</code></p>
 <h2 is-upgraded>Push</h2>
+<p>Lưu commit tại remote repo</p>
+<p><code>git push origin</code></p>
 <h2 is-upgraded>Pull</h2>
+<p>lấy dữ liệu từ remote repo để Cập nhật local repo.</p>
+<ol type="1">
+<li>Cập nhật 1 nhánh</li>
+</ol>
+<p><code>git pull origin <tên nhánh></code></p>
+<ol type="1">
+<li>Cập nhật tất cả <code>git pull origin</code></li>
+</ol>
 
 
       </google-codelab-step>
