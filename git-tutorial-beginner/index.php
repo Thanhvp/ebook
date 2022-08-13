@@ -155,6 +155,31 @@
 
       </google-codelab-step>
     
+      <google-codelab-step label="Merge và xử lý conflict" duration="5">
+        
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Một vài quy tắc cơ bản" duration="5">
+        <aside class="warning"><p>Lưu ý: Git chỉ là công cụ. Người vận hành cần phải có quy tắc để đảm bảo mọi thứ hoạt động tốt.</p>
+<ul>
+<li>01 nhánh cho 01 task.</li>
+<li>Trước khi checkout nhánh mới phải pull.</li>
+<li>trước khi commit nên merge với nhánh chính dự kiến để tránh conflict.</li>
+<li>ghi chú ngắn gọn, rõ ràng, dễ hiểu.	</li>
+</ul>
+</aside>
+<h2 is-upgraded>Tài liệu tham khảo</h2>
+<ul>
+<li><a href="https://git-scm.com/book/en/v2" target="_blank">https://git-scm.com/book/en/v2</a></li>
+<li><a href="https://backlog.com/git-tutorial/vn/intro/intro1_1.html" target="_blank">https://backlog.com/git-tutorial/vn/intro/intro1_1.html</a></li>
+<li><a href="https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud" target="_blank">https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud</a></li>
+<li><a href="https://www.conventionalcommits.org/en/v1.0.0/" target="_blank">https://www.conventionalcommits.org/en/v1.0.0/</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
   </google-codelab>
 
   <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
