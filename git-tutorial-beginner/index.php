@@ -96,19 +96,19 @@
 <ol type="1">
 <li>Clone từ github</li>
 </ol>
-<p><code>git clone https://<Tên tài khoản>:<Token>@github.com/Thanhvp/<tên repo></code></p>
+<p><code>git clone https://{Tên tài khoản}:{Token}@github.com/Thanhvp/{tên repo}</code></p>
 <ol type="1">
 <li>Clone từ gitlab</li>
 </ol>
-<p><code>git clone https://<Tên tài khoản>:<Token>@gitlab.com/daithanhbk/<tên repo>.git</code></p>
+<p><code>git clone https://{Tên tài khoản}:{Token}@gitlab.com/daithanhbk/{tên repo}.git</code></p>
 <p>1 thư mục làm việc sẽ được tải về máy tính. Bạn có truy cập vào thư mục để bắt đầu làm việc.</p>
-<p><code>cd <tên thư mục></code></p>
+<p><code>cd {tên thư mục}</code></p>
 <h2 is-upgraded>Status</h2>
 <p>Xem trạng thái hiện tại, đang ở nhánh nào, có những file nào đang bị thay đổi, thêm, sửa, xóa...</p>
 <p><code>git status</code></p>
 <h2 is-upgraded>Add</h2>
 <p>Lưu thông tin chuẩn bị commit.</p>
-<p><code>git add <tên file></code></p>
+<p><code>git add {tên file}</code></p>
 <p>Trong trường hợp muốn add tất cả.</p>
 <p><code>git add .</code></p>
 <h2 is-upgraded>Commit</h2>
