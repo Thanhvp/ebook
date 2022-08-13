@@ -182,6 +182,7 @@
 <li><a href="https://backlog.com/git-tutorial/vn/intro/intro1_1.html" target="_blank">https://backlog.com/git-tutorial/vn/intro/intro1_1.html</a></li>
 <li><a href="https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud" target="_blank">https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud</a></li>
 <li><a href="https://www.conventionalcommits.org/en/v1.0.0/" target="_blank">https://www.conventionalcommits.org/en/v1.0.0/</a></li>
+<li><a href="https://www.youtube.com/watch?v=1JuYQgpbrW0" target="_blank">https://www.youtube.com/watch?v=1JuYQgpbrW0</a></li>
 </ul>
 <p>Thank you for your time.</p>
 <p class="image-container"><img alt="Soly Image Caption" src="img/44f356558033e250.gif"></p>
