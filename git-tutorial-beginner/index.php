@@ -29,7 +29,7 @@
     
       <google-codelab-step label="Giới thiệu" duration="5">
         <p>GIT là một hệ thống quản lý phiên bản phân tán (Distributed Version Control System – DVCS) ra đời vào năm 2005 và hiện được dùng rất phổ biến. So với các hệ thống quản lý phiên bản tập trung khi tất cả mã nguồn và lịch sử thay đổi chỉ được lưu một nơi là máy chủ thì trong hệ thống phân tán, các máy khách không chỉ &#34;check out&#34; phiên bản mới nhất của các tập tin mà là sao chép (mirror) toàn bộ kho mã nguồn (repository). Như vậy, nếu như máy chủ ngừng hoạt động, thì bạn hoàn toàn có thể lấy kho chứa từ bất kỳ máy khách nào để sao chép ngược trở lại máy chủ để khôi phục lại toàn bộ hệ thống. Mỗi checkout thực sự là một bản sao đầy đủ của tất cả dữ liệu của kho chứa từ máy chủ. </p>
-<p class="image-container"><img alt="ep_click_import" src="img/381682db2fbdac0e.jpg"></p>
+<p class="image-container"><img alt="git_overview" src="img/381682db2fbdac0e.jpg"></p>
 <p>Git sẽ giúp bạn:</p>
 <p>✅ Quản lý các phiên bản khác nhau của mã nguồn</p>
 <p>✅ So sánh giữa các phiên bản</p>
@@ -82,6 +82,7 @@
 <li>Local repository: Là repo được cài đặt trên máy tính của lập trình viên, repo này sẽ đồng bộ hóa với remote repo bằng các lệnh của git.</li>
 <li>Remote repository: Là repo được cài đặt trên host, ví dụ Github hoặc Gitlab hoặc có thể tự host trên server.</li>
 </ul>
+<p class="image-container"><img alt="git_repo" src="img/7ebd527bb1d5884f.jpg"></p>
 <h2 is-upgraded>Tạo repo trên Github</h2>
 <h2 is-upgraded>Tạo repo trên Gitlab</h2>
 
@@ -93,6 +94,7 @@
 </aside>
 <h2 is-upgraded>Clone</h2>
 <p>Lệnh clone dùng để tạo local repo trên máy tính</p>
+<p class="image-container"><img alt="git_clone" src="img/c02109399d779913.jpg"></p>
 <ol type="1">
 <li>Clone từ github</li>
 </ol>
@@ -101,8 +103,10 @@
 <li>Clone từ gitlab</li>
 </ol>
 <p><code>git clone https://{Tên tài khoản}:{Token}@gitlab.com/daithanhbk/{tên repo}.git</code></p>
-<p>1 thư mục làm việc sẽ được tải về máy tính. Bạn có truy cập vào thư mục để bắt đầu làm việc.</p>
+<p>Sau khi clone, 1 thư mục làm việc sẽ được tải về máy tính. Bạn có truy cập vào thư mục để bắt đầu làm việc.</p>
 <p><code>cd {tên thư mục}</code></p>
+<h2 is-upgraded>Quy trình Git cơ bản</h2>
+<p class="image-container"><img alt="git_flow" src="img/9f01b40352bfcf98.jpg"></p>
 <h2 is-upgraded>Status</h2>
 <p>Xem trạng thái hiện tại, đang ở nhánh nào, có những file nào đang bị thay đổi, thêm, sửa, xóa...</p>
 <p><code>git status</code></p>
@@ -124,8 +128,9 @@
 </ol>
 <p><code>git pull origin <tên nhánh></code></p>
 <ol type="1">
-<li>Cập nhật tất cả <code>git pull origin</code></li>
+<li>Cập nhật tất cả</li>
 </ol>
+<p><code>git pull origin</code></p>
 
 
       </google-codelab-step>
