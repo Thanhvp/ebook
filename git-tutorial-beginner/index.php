@@ -47,7 +47,8 @@
 <p>Trên máy tính HĐH Linux, làm theo hướng dẫn tại <a href="https://git-scm.com/download/linux" target="_blank">https://git-scm.com/download/linux</a></p>
 <h2 is-upgraded>Kiểm tra</h2>
 <p>Mở CMD (window) hoặc terminal (Linux) và đánh lệnh kiểm tra để biết cài đặt thành công</p>
-<p><code>git --version</code></p>
+<pre><code>git --version
+</code></pre>
 
 
       </google-codelab-step>
@@ -97,42 +98,44 @@
 <h2 is-upgraded>Clone</h2>
 <p>Lệnh clone dùng để tạo local repo trên máy tính</p>
 <p class="image-container"><img alt="git_clone" src="img/c02109399d779913.jpg"></p>
-<ol type="1">
-<li>Clone từ github</li>
-</ol>
-<p><code>git clone https://{Tên tài khoản}:{Token}@github.com/Thanhvp/{tên repo}</code></p>
-<ol type="1">
-<li>Clone từ gitlab</li>
-</ol>
-<p><code>git clone https://{Tên tài khoản}:{Token}@gitlab.com/daithanhbk/{tên repo}.git</code></p>
+<p>Clone từ github</p>
+<pre><code>git clone https://&lt;Tên tài khoản&gt;:&lt;Token&gt;@github.com/Thanhvp/&lt;tên repo&gt;
+</code></pre>
+<p>Clone từ gitlab</p>
+<pre><code>git clone https://&lt;Tên tài khoản&gt;:&lt;Token&gt;@gitlab.com/daithanhbk/&lt;tên repo&gt;.git
+</code></pre>
 <p>Sau khi clone, 1 thư mục làm việc sẽ được tải về máy tính. Bạn có truy cập vào thư mục để bắt đầu làm việc.</p>
-<p><code>cd {tên thư mục}</code></p>
+<pre><code>cd &lt;tên thư mục&gt;
+</code></pre>
 <h2 is-upgraded>Quy trình Git cơ bản</h2>
 <p class="image-container"><img alt="git_flow" src="img/9f01b40352bfcf98.jpg"></p>
 <h2 is-upgraded>Status</h2>
 <p>Xem trạng thái hiện tại, đang ở nhánh nào, có những file nào đang bị thay đổi, thêm, sửa, xóa...</p>
-<p><code>git status</code></p>
+<pre><code>git status
+</code></pre>
 <h2 is-upgraded>Add</h2>
 <p>Lưu thông tin chuẩn bị commit.</p>
-<p><code>git add {tên file}</code></p>
+<pre><code>git add &lt;tên file&gt;
+</code></pre>
 <p>Trong trường hợp muốn add tất cả.</p>
-<p><code>git add .</code></p>
+<pre><code>git add .
+</code></pre>
 <h2 is-upgraded>Commit</h2>
 <p>Lưu lại các thay đổi</p>
-<p><code>git commit -m "ghi chú"</code></p>
+<pre><code>git commit -m &#34;ghi chú&#34;
+</code></pre>
 <h2 is-upgraded>Push</h2>
 <p>Lưu commit tại remote repo</p>
-<p><code>git push origin</code></p>
+<pre><code>git push origin
+</code></pre>
 <h2 is-upgraded>Pull</h2>
 <p>lấy dữ liệu từ remote repo để Cập nhật local repo.</p>
-<ol type="1">
-<li>Cập nhật 1 nhánh</li>
-</ol>
-<p><code>git pull origin <tên nhánh></code></p>
-<ol type="1">
-<li>Cập nhật tất cả</li>
-</ol>
-<p><code>git pull origin</code></p>
+<p>Cập nhật 1 nhánh</p>
+<pre><code>git pull origin &lt;tên nhánh&gt;
+</code></pre>
+<p>Cập nhật tất cả</p>
+<pre><code>git pull origin
+</code></pre>
 
 
       </google-codelab-step>
@@ -142,15 +145,19 @@
 <p class="image-container"><img alt="git_branch" src="img/febc6d559481bc73.jpg"></p>
 <h2 is-upgraded>branch</h2>
 <p>Lệnh tạo branch mới từ vị trí Head hiện tại</p>
-<p><code>git branch {tên nhánh mới}</code></p>
+<pre><code>git branch &lt;tên nhánh mới&gt;
+</code></pre>
 <h2 is-upgraded>checkout</h2>
 <p>Di chuyển Head sang một nhánh</p>
-<p><code>git checkout {tên nhánh hoặc SHA một node trên nhánh}</code></p>
+<pre><code>git checkout &lt;tên nhánh hoặc SHA một node trên nhánh&gt;
+</code></pre>
 <p>Có thể gộp 2 lệnh trên thành 1 lệnh vừa tạo nhánh mới vừa checkout</p>
-<p><code>git checkout -b {tên nhánh mới}</code></p>
+<pre><code>git checkout -b &lt;tên nhánh mới&gt;
+</code></pre>
 <h2 is-upgraded>merge</h2>
 <p>Gộp nhánh khác vào nhánh hiện tại</p>
-<p><code>git merge {tên nhánh lấy data}</code></p>
+<pre><code>git merge &lt;tên nhánh lấy data&gt;
+</code></pre>
 
 
       </google-codelab-step>
