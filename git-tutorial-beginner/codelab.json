@@ -1,0 +1,25 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2022-08-13T09:40:59+07:00",
+  "id": "git-tutorial-beginner",
+  "duration": 25,
+  "title": "GIT TUTORIAL FOR BEGINNER",
+  "summary": "Git Tutorial for Beginner",
+  "source": "sample.md",
+  "theme": "",
+  "status": [
+    "draft"
+  ],
+  "category": [
+    "git"
+  ],
+  "tags": [
+    "web",
+    "workshop"
+  ],
+  "feedback": "https://github.com/Thanhvp/ebook",
+  "url": "git-tutorial-beginner"
+}
