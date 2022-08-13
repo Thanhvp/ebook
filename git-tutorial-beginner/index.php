@@ -63,7 +63,9 @@
       </google-codelab-step>
     
       <google-codelab-step label="Tạo Token" duration="0">
-        <h2 is-upgraded>Github</h2>
+        <aside class="special"><p>Token có thể hiểu là một loại password dùng để xác thực đăng nhập.</p>
+</aside>
+<h2 is-upgraded>Github</h2>
 <p>👉 Setting 👉 Developer Setting 👉 Personal access tokens 👉 Generate new token</p>
 <p>👉 Điền thông tin 👉 thời hạn sử dụng 👉 chọn phân quyền 👉 Generate token</p>
 <h2 is-upgraded>Gitlab</h2>
