@@ -176,6 +176,8 @@
 <li><a href="https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud" target="_blank">https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud</a></li>
 <li><a href="https://www.conventionalcommits.org/en/v1.0.0/" target="_blank">https://www.conventionalcommits.org/en/v1.0.0/</a></li>
 </ul>
+<p>Thank you for your time.</p>
+<p class="image-container"><img alt="Soly Image Caption" src="img/44f356558033e250.gif"></p>
 
 
       </google-codelab-step>
