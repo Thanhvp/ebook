@@ -138,7 +138,20 @@
       </google-codelab-step>
     
       <google-codelab-step label="Nhánh (Branch)" duration="5">
-        
+        <p>Branch là hướng phát triển code nhằm mục đích tách biệt các công đoạn khỏi bị ảnh hưởng lẫn nhau.</p>
+<p class="image-container"><img alt="git_branch" src="img/febc6d559481bc73.jpg"></p>
+<h2 is-upgraded>branch</h2>
+<p>Lệnh tạo branch mới từ vị trí Head hiện tại</p>
+<p><code>git branch {tên nhánh mới}</code></p>
+<h2 is-upgraded>checkout</h2>
+<p>Di chuyển Head sang một nhánh</p>
+<p><code>git checkout {tên nhánh hoặc SHA một node trên nhánh}</code></p>
+<p>Có thể gộp 2 lệnh trên thành 1 lệnh vừa tạo nhánh mới vừa checkout</p>
+<p><code>git checkout -b {tên nhánh mới}</code></p>
+<h2 is-upgraded>merge</h2>
+<p>Gộp nhánh khác vào nhánh hiện tại</p>
+<p><code>git merge {tên nhánh lấy data}</code></p>
+
 
       </google-codelab-step>
     
