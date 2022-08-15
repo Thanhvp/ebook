@@ -164,7 +164,12 @@
     
       <google-codelab-step label="Merge và xử lý conflict" duration="5">
         
-
+<ul>
+<li>01 nhánh cho 01 task.</li>
+<li>Trước khi checkout nhánh mới phải pull.</li>
+<li>trước khi commit nên merge với nhánh chính dự kiến để tránh conflict.</li>
+<li>ghi chú ngắn gọn, rõ ràng, dễ hiểu.	</li>
+</ul>
       </google-codelab-step>
     
       <google-codelab-step label="Một vài quy tắc cơ bản" duration="5">
